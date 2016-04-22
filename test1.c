@@ -26,5 +26,4 @@ void test1(int dummy) {
 int main(int argc, char **argv)
 {
     dccthread_init(test1, 0);
-return 0;
 }
