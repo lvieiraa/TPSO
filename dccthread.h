@@ -1,6 +1,17 @@
 #ifndef __DCCTHREAD_HEADER__
 #define __DCCTHREAD_HEADER__
 
+#include <assert.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <ucontext.h>
+#include <signal.h>
+#include <string.h>
+#include <stdio.h>
+#include <limits.h>
+#include <ctype.h>
+
 typedef struct dccthread{
 	ucontext_t estado;  
 	char *tid;
