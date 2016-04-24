@@ -2,7 +2,7 @@
 #define __DCCTHREAD_HEADER__
 
 typedef struct dccthread{
-	ucontext_t *estado;
+	ucontext_t estado;
 	char *tid;
 
 } dccthread_t;
