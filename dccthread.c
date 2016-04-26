@@ -10,6 +10,13 @@
 #define handle_error(msg) \
            do { perror(msg); exit(EXIT_FAILURE); } while (0) //mensagem de erro copiado do man da funcaos da biblioteca ucontext.h
 //inciar fila de prontos e fila de espera
+/*
+struct sigevent timerEvent;
+struct sigaction timerAtua, timeAtuaAnt;
+struct itimerspec tempoX;
+timer_t timer;
+sig_atomic_t gerenteAtua;
+*/
 dccthread_t * fila[TAM];
 int atual = 0; 
 int ultimo = 0;
@@ -24,13 +31,12 @@ dccthread_t * dccthread_self(void)
 
 void dccthread_yield(void){
 
-swapcontext(&(fila[ultimo]->estado), &gerente);
-
+printf("Tem que implementar yield\n");
 }
 
 void gerenciador(void) {
 printf("tem que implementar o gerenciador!\n");
-setcontext(&(fila[ultimo]->estado));
+//setcontext(&(fila[ultimo]->estado));
 } 
 
 const char *dccthread_name(dccthread_t *tid)
@@ -59,7 +65,14 @@ void dccthread_init(void (*func)(int), int param){
 	makecontext(&gerente, gerenciador, 0); //passa a funcao "gerenciador" que gerencia as threads para a thread gerente
 	dccthread_create("principal", func, param);
 	printf("debug\n");
-	swapcontext(&principal, &gerente);
+	//swapcontext(&principal, &gerente);
+	printf("%d\n",ultimo);
+	swapcontext(&principal, &fila[ultimo-1]->estado);
+
+	
+	
+
+	
 exit(0); //exit(0) para parar de dar warning de falha de retorno
 
 	/*//verificar a funcao passada por parametro
@@ -76,42 +89,14 @@ fila[ultimo] = (dccthread_t *) malloc(sizeof(dccthread_t *));
 getcontext(&(fila[ultimo]-> estado));
 fila[ultimo]-> estado.uc_link = &gerente; 
 iniciarContexto(&(fila[ultimo]-> estado)); 
+printf("criada a thread: %d\n", ultimo);
 
 makecontext(&(fila[ultimo]-> estado), (void (*)(void)) func, 1, param);
+if (ultimo != 0 )
+swapcontext(&fila[ultimo-1]->estado, &fila[ultimo]->estado );
+
 dccthread_t *retorno = fila[ultimo];
 ultimo ++;
 ultimo = ultimo % TAM;//limita a fila ao tamanha maximo da constante TAM
 return retorno;
 }
-
-
-
-/*void f1(int dummy)
-{
-    dccthread_t *tid = dccthread_self();
-    char *name = dccthread_name(tid);
-	int i = 0;
-    for(i = 0; i < 3; i++) {
-        printf("thread %s on iteration %d\n", name, i);
-        dccthread_yield();
-    }
-}
-
-void test1(int dummy) {
-    dccthread_t *tid1 = dccthread_create("t1", f1, 0);
-    dccthread_t *tid2 = dccthread_create("t2", f1, 0);
-    dccthread_t *tid3 = dccthread_create("t3", f1, 0);
-	int i = 0;
-    for(i = 0; i < 10; i++) {
-        printf("test1 yielding\n");
-        dccthread_yield();
-    }
-    exit(EXIT_SUCCESS);
-}*/
-
-/*int main(int argc, char **argv)
-{
-	return 0;
-    //dccthread_init(test1, 0);
-}
-*/
