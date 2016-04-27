@@ -10,13 +10,7 @@
 #define handle_error(msg) \
            do { perror(msg); exit(EXIT_FAILURE); } while (0) //mensagem de erro copiado do man da funcaos da biblioteca ucontext.h
 //inciar fila de prontos e fila de espera
-/*
-struct sigevent timerEvent;
-struct sigaction timerAtua, timeAtuaAnt;
-struct itimerspec tempoX;
-timer_t timer;
-sig_atomic_t gerenteAtua;
-*/
+
 dccthread_t * fila[TAM];
 int atual = 0; 
 int ultimo = 0;
@@ -25,7 +19,7 @@ ucontext_t gerente, principal;
 
 dccthread_t * dccthread_self(void)
 {
-  // Return the running thread.
+
   return fila[ultimo];
 }
 
